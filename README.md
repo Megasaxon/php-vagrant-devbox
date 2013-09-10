@@ -31,7 +31,7 @@ $ vagrant plugin install vagrant-hostsupdater
 Clone the repository in your prefered location, initialize submodules, and update:
 
 ```sh
-$ git clone https://github.com/megasaxon/php-vagrant-devbox
+$ git clone https://github.com/Megasaxon/php-vagrant-devbox.git
 ```
 
 ### Vagrant up
