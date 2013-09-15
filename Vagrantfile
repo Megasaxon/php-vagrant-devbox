@@ -1,8 +1,9 @@
 Vagrant.configure("2") do |config|
 
 	#box configuration
-	config.vm.box = "devbox"
-	config.vm.box_url = "http://craigrose.eu/vagrant/vagrant-raring64.box"
+	config.vm.box = "php-devbox"
+	#config.vm.box_url = "http://files.craigrose.eu/vagrant-debian-wheezy64.box"
+	config.vm.box_url = "package.box"
 
 	#vm config
 	config.vm.hostname = "example.com"
@@ -14,7 +15,7 @@ Vagrant.configure("2") do |config|
 	end
 
 	#sync Folder(s)
-	config.vm.synced_folder "app/", "/app", :nfs => true
+	config.vm.synced_folder "app/", "/app", :nfs => true #Will only work on Linux & OSX!
 
 	#Puppet provisioning
 	config.vm.provision :puppet do |puppet|

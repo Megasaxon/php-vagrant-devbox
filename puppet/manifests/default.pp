@@ -2,9 +2,12 @@ group { 'puppet':
     ensure => present,
 }
 
-exec { 'apt-get update': 
+exec { 'apt-update': 
     command => '/usr/bin/apt-get update',
 }
+
+#run an apt-get update every time we install a package, just incase :)
+Exec["apt-update"] -> Package <| |>
 
 package { 'curl':
     ensure => present,
@@ -28,37 +31,6 @@ package { 'php5-mysql':
 package { 'nginx': 
     ensure => present,
     require => Exec['apt-get update'],
-}
-
-package { 'build-essential': 
-    ensure => present,
-    require => Exec['apt-get update'],
-}
-
-package { 'git-core': 
-    ensure => present,
-    require => Exec['apt-get update'],
-}
-
-package { 'mysql-server': 
-    ensure => installed,
-    require => Exec['apt-get update']
-}
-
-package { 'mysql-client': 
-    ensure => installed,
-    require => Exec['apt-get update']
-}
-
-package { 'openvpn':
-    ensure => installed,
-    require => Exec['apt-get update']
-}
-
-service { 'mysql':
-    enable => true,
-    ensure => running,
-    require => Package['mysql-server'],
 }
 
 service { 'php5-fpm':

@@ -1,7 +1,7 @@
 # Vagrant: PHP Development Box
 
 ##Overview
-This Vagrant box is built from a fresh Ubuntu Raring Ringtail (13.04) x86_64
+This Vagrant box is built from a fresh Debian Wheezy (7.1) x86_64
 
 The following is used:
 - PHP 5.5.3 (PHP-FPM)
@@ -19,7 +19,7 @@ The following instructions are specific to OSX.
 
 ### Install Vagrant
 
-Download and install vagrant (1.2.2+): http://downloads.vagrantup.com
+Download and install vagrant (1.3.1+): http://downloads.vagrantup.com
 
 #### Install the Vagrant Hosts Updater plugin (optional)
 ```sh
