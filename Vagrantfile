@@ -11,11 +11,13 @@ Vagrant.configure("2") do |config|
 	config.vm.network :private_network, ip: "192.168.1.121"
 
 	config.vm.provider :virtualbox do |vb|
+		#comment the below line out if you do not have VirtualBox installed!
 		vb.customize ["modifyvm", :id, "--memory", "1024"] # Bump box memory from 384MB -> 1GB ram.
 	end
 
 	#sync Folder(s)
-	config.vm.synced_folder "app/", "/app", :nfs => true #Will only work on Linux & OSX!
+	#attempt to sync via NFS on linux/mac, otherwise use default shared folders
+	config.vm.synced_folder "app/", "/app", :nfs => (RUBY_PLATFORM =~ /mingw32/).nil?
 
 	#Puppet provisioning
 	config.vm.provision :puppet do |puppet|

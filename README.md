@@ -9,13 +9,23 @@ The following is used:
 
 ## Installation
 
-The following instructions are specific to OSX.
+The following instructions are tailored for OSX users, however should work fine for Linux and Windows too.
 
 ### Requirements
 
-- OSX 10.8+
-- Vagrant
+- Vagrant (1.3.1+)
 - Vagrant hosts-updater plugin (optional: Adds entries into your hosts file for ease of use)
+- VirtualBox (See below for more information)
+
+#### Virtualbox Requirement
+
+Virtualbox is required for modifying the Vitual Machine's Memory on boot. The Box itself defaults to 384MB ram, however this can be increased to a specific desired amount (default of 1024mb) via the Vagrantfile.
+
+You need to comment out the following line if you wish to use this set-up without having Virtualbox installed.
+
+```ruby
+vb.customize ["modifyvm", :id, "--memory", "1024"]
+```
 
 ### Install Vagrant
 
@@ -43,7 +53,7 @@ $ cd php-vagrant-devbox
 $ vagrant up
 ```
 
-*Note:* You may be prompted with your OSX password during the point where NFS is enabled. You must provide your password to proceed.
+*Note:* You may be prompted with your account password during the point where NFS is enabled (on OSX & Linux). You must provide your password to proceed.
 
 ## Usage
 
