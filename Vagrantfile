@@ -1,12 +1,13 @@
 Vagrant.configure("2") do |config|
 
 	#box configuration
-	config.vm.box = "php-devbox"
+	config.vm.box = "php-devbox-ubuntu"
 	#config.vm.box_url = "http://files.craigrose.eu/vagrant-debian-wheezy64.box"
-	config.vm.box_url = "package.box"
+	#config.vm.box_url = "package.box"
+	config.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/ubuntu-server-12042-x64-vbox4210.box"
 
 	#vm config
-	config.vm.hostname = "example.com"
+	config.vm.hostname = "localhost.de"
 	config.vm.network :forwarded_port, guest: 80, host: 8080
 	config.vm.network :private_network, ip: "192.168.1.121"
 
