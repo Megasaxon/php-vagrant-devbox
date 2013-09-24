@@ -22,6 +22,21 @@ class dotdeb {
     include apt
     include apt::update
 
+    apt::source { 'dotdeb-php':
+        location   => 'http://packages.dotdeb.org',
+        release    => 'wheezy-php55',
+        repos      => 'all',
+        key        => '89DF5277',
+        key_server => 'keys.gnupg.net',
+    }
+    apt::source { 'dotdeb-main':
+        location   => 'http://packages.dotdeb.org',
+        release    => 'wheezy',
+        repos      => 'all',
+        key        => '89DF5277',
+        key_server => 'keys.gnupg.net',
+    }
+
 }
 
 class base {
@@ -98,6 +113,14 @@ class base {
         ],
     }
 
+    file { 'vagrant-php5-fpm':
+        path => '/etc/php5/fpm/php.ini',
+        ensure => file,
+        replace => true,
+        require => Package['php5-fpm'],
+        source => 'puppet:///modules/php5-fpm/php.ini',
+        notify => Service['php5-fpm'],
+    }
     package { 'curl':
         ensure => present,
         require => Exec['apt-update'],
@@ -128,9 +151,17 @@ class base {
         require => Exec['apt-update'],
     }
 
-    
+    package { 'php5-xhprof': 
+        ensure => present,
+        require => Exec['apt-update'],
+    }
 
     package { 'php5-xdebug': 
+        ensure => present,
+        require => Exec['apt-update'],
+    }
+
+    package { 'php5-redis': 
         ensure => present,
         require => Exec['apt-update'],
     }

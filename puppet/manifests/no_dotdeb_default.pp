@@ -22,21 +22,6 @@ class dotdeb {
     include apt
     include apt::update
 
-    apt::source { 'dotdeb-php':
-        location   => 'http://packages.dotdeb.org',
-        release    => 'wheezy-php55',
-        repos      => 'all',
-        key        => '89DF5277',
-        key_server => 'keys.gnupg.net',
-    }
-    apt::source { 'dotdeb-main':
-        location   => 'http://packages.dotdeb.org',
-        release    => 'wheezy',
-        repos      => 'all',
-        key        => '89DF5277',
-        key_server => 'keys.gnupg.net',
-    }
-
 }
 
 class base {
