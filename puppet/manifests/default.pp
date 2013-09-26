@@ -37,6 +37,25 @@ class dotdeb {
         key_server => 'keys.gnupg.net',
     }
 
+
+
+    $location = "Somewhere"
+    $country = "DE"
+    $state = "WHAT"
+    $organization = "company"
+    $unit = "dev"
+    $commonname = "localhost.de"
+    $keyname = "localhost-ssl"
+     
+    $subject = "/C=${country}/ST=${state}/L=${location}/O=${organization}/OU=${unit}/CN=${commonname}"
+    $createcertificate = "openssl req -new -newkey rsa:2048 -x509 -days 365 -nodes -out ${keyname}.crt -keyout ${keyname}.key -subj \"${subject}\""
+     
+    exec { "openssl-csr":
+      command => $createcertificate,
+      cwd => '/etc/',
+      creates => "/etc/${keyname}.key"
+    }
+
 }
 
 class base {
