@@ -16,35 +16,48 @@ class { 'base':
     stage => main,
 }
 
+class {'composer':
+    stage => last,
+}
+
 Stage['main'] -> Stage['last']
 
 class dotdeb {    
     include apt
     include apt::update
 
+    #add the MariaDB and Dotdeb sources to apt. You might want to change the mirrors used here.
     apt::source { 'dotdeb-php':
-        location   => 'http://packages.dotdeb.org',
+        location   => 'http://ftp.hosteurope.de/mirror/packages.dotdeb.org/',
         release    => 'wheezy-php55',
         repos      => 'all',
         key        => '89DF5277',
         key_server => 'keys.gnupg.net',
     }
+
     apt::source { 'dotdeb-main':
-        location   => 'http://packages.dotdeb.org',
+        location   => 'http://ftp.hosteurope.de/mirror/packages.dotdeb.org/',
         release    => 'wheezy',
         repos      => 'all',
         key        => '89DF5277',
         key_server => 'keys.gnupg.net',
     }
 
+    apt::source { 'mariadb':
+        location   => 'http://mirror.netcologne.de/mariadb/repo/10.0/debian',
+        release    => 'wheezy',
+        repos      => 'main',
+        key        => '1BB943DB',
+        key_server => 'keyserver.ubuntu.com',
+    }
 
-
+    #Generate a SSL certificate for the host.
     $location = "Somewhere"
     $country = "DE"
     $state = "WHAT"
     $organization = "company"
     $unit = "dev"
-    $commonname = "localhost.de"
+    $commonname = "example.com"
     $keyname = "localhost-ssl"
      
     $subject = "/C=${country}/ST=${state}/L=${location}/O=${organization}/OU=${unit}/CN=${commonname}"
@@ -55,7 +68,6 @@ class dotdeb {
       cwd => '/etc/',
       creates => "/etc/${keyname}.key"
     }
-
 }
 
 class base {
@@ -85,6 +97,26 @@ class base {
     file { "/home/web/www":
         ensure => link,
         target => "/app/www",
+    }
+
+    package { 'mariadb-server': 
+        ensure => present,
+        require => Exec['apt-update'],
+    }
+
+    service { 'mysql':
+        ensure => running,
+        require => Package['mariadb-server'],
+    }
+
+    package { 'redis-server': 
+        ensure => present,
+        require => Exec['apt-update'],
+    }
+
+    service { 'redis-server':
+        ensure => running,
+        require => Package['redis-server'],
     }
 
     package { 'nginx': 
@@ -185,6 +217,11 @@ class base {
         require => Exec['apt-update'],
     }
 
+    package { 'php-pear': 
+        ensure => present,
+        require => Exec['apt-update'],
+    }
+
     package { 'php5-mysqlnd': 
         ensure => present,
         require => [
@@ -194,6 +231,18 @@ class base {
         notify => Service['php5-fpm'],
     }
 
+    exec { 'pear-upgrade':
+        command => 'pear upgrade PEAR',
+    }
+
+    exec { 'pear-config':
+        command => 'pear config-set auto_discover 1',
+    }
+
+    exec { 'pear-phpqatools':
+        command => 'pear install pear.phpqatools.org/phpqatools',
+    }
+
     service { 'php5-fpm':
         enable => true,
         ensure => running,
@@ -201,8 +250,22 @@ class base {
     }
 
 }
-  
 
 exec { 'apt-update': 
    command => '/usr/bin/apt-get update',
+}
+
+class composer {
+
+    exec { "fetch composer":
+        command => "curl -sS https://getcomposer.org/installer | php",
+        path => ["/usr/bin", "/usr/sbin"]
+    }
+
+  exec { "copy composer bin": 
+    command => "mv composer.phar /usr/local/bin/composer",
+    require => Exec["fetch composer"],
+    unless => "test -f /usr/local/bin/composer",
+    path => ["/bin", "/usr/bin", "/usr/sbin"],
+  }
 }
