@@ -62,7 +62,7 @@ class provision::base {
         ensure  => file,
         replace => true,
         require => Package['nginx'],
-        source  => 'puppet:///modules/nginx/nginx.conf',
+        source  => '/vagrant/puppet/configs/nginx/nginx.conf',
         notify  => Service['nginx'],
     }
 
@@ -71,7 +71,7 @@ class provision::base {
         ensure  => file,
         replace => true,
         require => Package['nginx'],
-        source  => 'puppet:///modules/nginx/vhost.conf',
+        source  => '/vagrant/puppet/configs/nginx/vhost.conf',
         notify  => Service['nginx'],
     }
 
@@ -92,6 +92,22 @@ class provision::base {
         ],
     }
     
+    #set up MySQL/MariaDB
+    file { 'mysql-conf':
+        path    => '/etc/mysql/my.cnf',
+        ensure  => file,
+        replace => true,
+        require => Package['mariadb-server'],
+        source  => '/vagrant/puppet/configs/mysql/my.cnf',
+        notify  => Service['mysql'],
+    }
+    #give remote mysql access
+    exec { "mysql-init":
+      unless => "/usr/bin/mysql -u${user}",
+      require => Package['mariadb-server'],
+      command => "/usr/bin/mysql -uroot -e \"CREATE USER 'root'@'%' IDENTIFIED BY ''; GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;\"",
+    }
+
     package { 'curl':
         ensure  => present,
         require => Exec['apt-update'],

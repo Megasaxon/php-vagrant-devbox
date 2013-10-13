@@ -71,7 +71,7 @@ class provision::php {
         ensure  => file,
         replace => true,
         require => Package['php5-fpm'],
-        source  => 'puppet:///modules/php5-fpm/php.ini',
+        source  => '/vagrant/puppet/configs/php5-fpm/php.ini',
         notify  => Service['php5-fpm'],
     }
     

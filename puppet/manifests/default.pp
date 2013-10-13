@@ -2,21 +2,23 @@
 Exec {
     path => ['/bin/', '/sbin/', '/usr/bin/', '/usr/sbin/']
 }
-#require puppetlabs stdlib
-include stdlib
+
+stage { [init, base, php, last]: }
+
+Stage['init']->Stage['main']->Stage['base']->Stage['php']->Stage['last']
 
 class { 'provision::init':
-    stage => setup,
+    stage => init,
 }
 
 class { 'provision::base':
-    stage => runtime,
+    stage => base,
 }
 
 class { 'provision::php':
-    stage => setup_infra,    
+    stage => php,    
 }
 
 class {'provision::last':
-    stage => deploy_infra,
+    stage => last,
 }
