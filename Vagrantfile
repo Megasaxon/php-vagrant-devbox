@@ -18,6 +18,7 @@ Vagrant.configure("2") do |config|
     #vm config
     config.vm.hostname = BOX_HOST_NAME
     config.vm.network :forwarded_port, guest: 80, host: 8080
+    config.vm.network :forwarded_port, guest: 3306, host: 3310
     config.vm.network :private_network, ip: "192.168.1.121"
 
     config.vm.provider :virtualbox do |vb|
