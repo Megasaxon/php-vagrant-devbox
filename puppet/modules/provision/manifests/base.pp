@@ -103,9 +103,9 @@ class provision::base {
     }
     #give remote mysql access
     exec { "mysql-init":
-      unless => "/usr/bin/mysql -u${user}",
-      require => Package['mariadb-server'],
-      command => "/usr/bin/mysql -uroot -e \"CREATE USER 'root'@'%' IDENTIFIED BY ''; GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;\"",
+        unless  => "/usr/bin/mysql -u${user}",
+        require => Package['mariadb-server'],
+        command => "/usr/bin/mysql -uroot -e \"CREATE USER 'root'@'%' IDENTIFIED BY ''; GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;\"",
     }
 
     package { 'curl':
